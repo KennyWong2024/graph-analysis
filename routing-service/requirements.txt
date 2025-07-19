@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+httpx
+networkx
+python-dotenv
+structlog
+python-json-logger

@@ -1,0 +1,26 @@
+# Entornos y variables
+.env
+.env.*      
+.venv/            
+venv/
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# IDEs y editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Docker datos locales
+neo4j-data/ 
+
+# Otros
+.DS_Store
