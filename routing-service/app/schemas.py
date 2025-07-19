@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class RouteRequest(BaseModel):
     start: str
-    end: str
-    algo: str  # Algoritmos
+    end:   Optional[str] = None
+    algo:  str                    
 
 class RouteResponse(BaseModel):
-    path: List[str]
-    cost: float
+    nodes: List[str]      
+    cost:  float                  
