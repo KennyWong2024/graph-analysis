@@ -83,7 +83,7 @@ Enable integration with additional distros: "Ubuntu"
 
 Guardar y reiniciar.
 
-![alt text](image.png)
+![alt text](assets/images/image.png)
 
 Para probar que todo esté en orden, abrir el terminal de Linux 
 ```bash
@@ -276,7 +276,7 @@ Creemos una carpeta, en mi caso la llamaré *Graph Algorithms*, creamos un nuevo
 http://{{host}}:{{ingest_port}}/export-graph
 
 Veremos un JSON con la información en nuestra base de datos o bien la tabla con los nodos y el peso de las aristas.
-![alt text](image-1.png)
+![alt text](assets/images/image-1.png)
 
 ### route (POST)
 http://{{host}}:{{route_port}}/route
@@ -289,6 +289,8 @@ Definimos en el body (RAW) los parametros que espera nuestro sistema.
   "algo":  "prim"
 }
 ```
+Veremos un JSON con la información del path seguido por el algoritmo seleccionado.
+![alt text](assets/images/image-2.png)
 
 Recordemos que la variable "algo" espera el algoritmo, ahi solo cambiamos cual queremos ejecutar.
 - "bfs"
