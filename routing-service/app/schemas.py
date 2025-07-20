@@ -4,8 +4,9 @@ from typing import List, Optional
 class RouteRequest(BaseModel):
     start: str
     end:   Optional[str] = None
-    algo:  str                    
-
+    algo:  str
+    directed: bool = False 
+          
 class RouteResponse(BaseModel):
     nodes: List[str]      
-    cost:  float                  
+    cost:  float

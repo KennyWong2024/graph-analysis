@@ -9,15 +9,15 @@ from .schemas import RouteRequest, RouteResponse
 INGEST_URL = "http://localhost:8000/export-graph"
 
 async def compute_route(req: RouteRequest) -> RouteResponse:
-    # 1) Obtener aristas
+    # Obtener aristas
     r = httpx.get(INGEST_URL)
     r.raise_for_status()
     edges = r.json()
 
-    # 2) Construir grafo
-    G = build_graph(edges)
+    # Construir grafo
+    G = build_graph(edges, directed=req.directed)
 
-    # 3) Ejecutar algoritmo
+    # Ejecutar algoritmo
     if req.algo == "bfs":
         if req.end:
             nodes, cost = bfs_path_cost(G, req.start, req.end)
@@ -36,5 +36,5 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
     else:
         raise ValueError("Algoritmo no soportado")
 
-    # 4) Devolver
+    # Devolver
     return RouteResponse(nodes=nodes, cost=cost)

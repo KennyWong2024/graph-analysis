@@ -19,7 +19,7 @@ def startup():
 
 @app.post("/route", response_model=RouteResponse)
 async def route(req: RouteRequest):
-    logger.info("Received route request", start=req.start, end=req.end, algo=req.algo)
+    logger.info("Received route request", start=req.start, end=req.end, algo=req.algo, directed=req.directed)
     try:
         return await compute_route(req)
     except Exception as e:
