@@ -10,21 +10,21 @@ NEO4J_USER     = os.getenv("NEO4J_USER")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 logger.debug(
-    "Neo4j config",
+    "Configuración de Neo4j",
     uri=NEO4J_URI,
     user=NEO4J_USER
 )
 
 try:
     driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
-    logger.info("Neo4j driver initialized")
+    logger.info("Driver de Neo4j inicializado")
 except Exception:
     err = traceback.format_exc()
-    logger.error("Failed to initialize Neo4j driver", error=err)
+    logger.error("Error al inicializar el driver de Neo4j", error=err)
     raise
 
 def fetch_graph_edges():
-    logger.info("Starting fetch_graph_edges")
+    logger.info("Iniciando obtención de aristas del grafo")
     query = """
     MATCH (n)-[r:CONECTADO]->(m)
     RETURN n.id AS source, m.id AS target, r.distancia AS weight
@@ -32,18 +32,26 @@ def fetch_graph_edges():
     edges = []
     try:
         with driver.session() as session:
-            logger.debug("Executing Cypher query", query=query.strip())
+            logger.debug("Ejecutando consulta Cypher", query=query.strip())
             result = session.run(query)
             for record in result:
                 s = record["source"]
                 t = record["target"]
                 w = record["weight"]
-                logger.debug("Fetched edge", source=s, target=t, weight=w)
+                logger.debug(
+                    "Arista obtenida",
+                    source=s,
+                    target=t,
+                    weight=w
+                )
                 edges.append({"source": s, "target": t, "weight": w})
-        logger.info("Completed fetch_graph_edges", count=len(edges))
+        logger.info(
+            "Finalizada obtención de aristas",
+            cantidad=len(edges)
+        )
         return edges
 
     except Exception:
         err = traceback.format_exc()
-        logger.error("Exception in fetch_graph_edges", error=err)
+        logger.error("Excepción al obtener aristas del grafo", error=err)
         raise

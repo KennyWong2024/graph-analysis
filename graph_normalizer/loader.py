@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 Edge = Dict[str, Union[str, float]]
 
 def build_graph(edges: List[Edge], directed: bool = False) -> Union[Graph, DiGraph]:
-    graph_type = 'DiGraph' if directed else 'Graph'
-    logger.debug(f"Starting build_graph: constructing {graph_type} with {len(edges)} edges")
+    tipo_grafo = 'dirigido' if directed else 'no dirigido'
+    logger.debug(f"Iniciando construcción de grafo {tipo_grafo} con {len(edges)} aristas")
 
     G = nx.DiGraph() if directed else nx.Graph()
 
@@ -19,13 +19,13 @@ def build_graph(edges: List[Edge], directed: bool = False) -> Union[Graph, DiGra
             tgt = edge['target']
             w = edge['weight']
         except KeyError as e:
-            logger.warning(f"Skipping malformed edge {edge}: missing {e}")
+            logger.warning(f"Omitiendo arista mal formateada {edge}: falta la clave {e}")
             continue
 
         G.add_edge(src, tgt, weight=w)
 
     logger.debug(
-        f"Finished build_graph: resulting {graph_type} has "
-        f"{G.number_of_nodes()} nodes and {G.number_of_edges()} edges"
+        f"Finalizada construcción de grafo {tipo_grafo}: "
+        f"{G.number_of_nodes()} nodos, {G.number_of_edges()} aristas"
     )
     return G

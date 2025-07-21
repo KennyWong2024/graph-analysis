@@ -1,4 +1,5 @@
 import httpx
+import os
 from graph_normalizer.loader import build_graph
 from graph_normalizer.algorithms.bfs import bfs_path_cost
 from graph_normalizer.algorithms.dfs import dfs_path_cost
@@ -6,7 +7,10 @@ from graph_normalizer.algorithms.prim import prim_tree_cost
 from graph_normalizer.algorithms.full import bfs_full_traversal, dfs_full_traversal
 from .schemas import RouteRequest, RouteResponse
 
-INGEST_URL = "http://localhost:8000/export-graph"
+INGEST_URL = os.getenv(
+    "INGEST_SERVICE_URL",
+    "http://localhost:8000/export-graph"
+)
 
 async def compute_route(req: RouteRequest) -> RouteResponse:
     # Obtener aristas

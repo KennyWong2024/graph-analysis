@@ -27,6 +27,8 @@ graph-analysis/
 │   │   ├── main.py                 # FastAPI app con endpoint /export-graph, llamar logger
 │   │   ├── neo4j_client.py         # Cliente Neo4j y consulta Cypher
 │   │   └── schemas.py              # Pydantic models (GraphEdge, etc.)
+│   ├── Dockerfile 
+│   ├── README.md                   # Guia de microservicio
 │   └── requirements.txt
 │
 ├── routing-service/                # Microservicio de cálculo de rutas
@@ -35,6 +37,8 @@ graph-analysis/
 │   │   ├── main.py                 # FastAPI app con endpoint /route
 │   │   ├── orchestrator.py         # Lógica de orquestación de rutas
 │   │   └── schemas.py              # Pydantic models (RouteRequest, RouteResponse)
+│   ├── Dockerfile 
+│   ├── README.md                   # Guia de microservicio
 │   └── requirements.txt
 │
 ├── graph-normalizer/               # Paquete reutilizable de carga y normalización
@@ -47,7 +51,7 @@ graph-analysis/
 │       └── prim.py
 │
 ├── queries/                        # Consultas para poblar datos de ejemplo
-│   ├── README.md                   # instrucciones de uso de Query's
+│   ├── README.md                   # Instrucciones de uso de Query's
 │   ├── 01-nodos-clientes.cypher
 │   ├── 02-nodos-cruces.cypher
 │   └── 03-conexiones-bidireccionales.cypher
@@ -297,3 +301,44 @@ Recordemos que la variable "algo" espera el algoritmo, ahi solo cambiamos cual q
 - "dfs"
 - "prim"
 
+# Despliegue en Docker
+El despliegue que hemos realizado a este punto ha sido manual, y es muy util para comprender como funciona el sistema y que operacioens realiza, sin embargo, para simplificarlo y tener algo mas robusto semejante a lo que veriamso en un entorno empresaria, podemos desplegar el sistema en docker mediante el uso de imágenes.
+
+Primero, cambiaremos nuestro .env para que sea compatible con docker y no el modo de pruebas locales, tenemos que descomentar *NEO4J_URI=bolt://neo4j:7687 Para Docker* y comentar *NEO4J_URI=bolt://localhost:7687*
+```bash
+NEO4J_URI=bolt://localhost:7687
+# NEO4J_URI=bolt://neo4j:7687       Para Docker
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_password_here
+INGEST_LOGFILE=ingest.log
+INGEST_SERVICE_URL=http://ingest-service:8001/export-graph
+ROUTING_LOGFILE=routing.log
+```
+
+Guardamos los cambios y estando en la carpeta raiz ejecutamos
+```bash
+docker-compose up --build
+```
+*Nota esto ejecutará la creación de imágenes, los servicios quedarán arriba, para frenarlos unicamente utilziar CTRL + C*
+
+Una vez creados los contenedores podemos nuevamente levantar nuestro sistema con el siguiente comando 
+```bash
+docker-compose up -d
+```
+
+Tambien podemos verificar los servicios levantados con 
+```bash
+docker-compose ps
+```
+
+Incluso podemos abrir otra consola para mnonitorear los logs de nuestra aplicación
+```bash
+docker-compose logs -f ingest-service routing-service
+```
+
+Podemos detener los servicios en cualquier momento con 
+```bash
+docker-compose down
+```
+
+Podremos utilizar de igual forma postman para realizar consultas, solo que esta vez *ingest_port = 8001* y *route_port = 8001*

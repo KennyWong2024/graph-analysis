@@ -13,7 +13,7 @@ setup_logging(logfile_path=LOG_FILE)
 logger = structlog.get_logger(__name__)
 
 logger.debug(
-    "Environment loaded",
+    "Entorno cargado",
     NEO4J_URI=os.getenv("NEO4J_URI"),
     NEO4J_USER=os.getenv("NEO4J_USER")
 )
@@ -25,17 +25,17 @@ app = FastAPI(title="Ingest Service")
 
 @app.on_event("startup")
 def on_startup():
-    logger.info("Ingest service started")
+    logger.info("Servicio de ingestión iniciado")
 
 @app.get("/export-graph", response_model=list[GraphEdge])
 def export_graph():
-    logger.info("Received request /export-graph")
+    logger.info("Solicitud recibida en /export-graph")
     try:
-        logger.debug("Calling fetch_graph_edges()")
+        logger.debug("Llamando a fetch_graph_edges()")
         edges = fetch_graph_edges()
-        logger.debug("Mapping edges to Pydantic models", count=len(edges))
+        logger.debug("Transformando aristas a modelos Pydantic", cantidad=len(edges))
         return [GraphEdge(**edge) for edge in edges]
     except Exception:
         err = traceback.format_exc()
-        logger.error("Error fetching graph edges", error=err)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        logger.error("Error al obtener aristas del grafo", error=err)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
