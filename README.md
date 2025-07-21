@@ -1,17 +1,12 @@
 # Justificación
 
-Este proyecto fue diseñado de forma didáctica para poder aprender y entender como funcionan los algoritmos de grafos como BFS, DFS y el de Prim, para ello
-se utiliza la libreria de Python llamada NetworkX y así realizar el analisis de los datos.
+Este proyecto fue diseñado de forma didáctica para poder aprender y entender cómo funcionan los algoritmos de grafos como BFS, DFS y el de Prim. Para ello se utiliza la librería de Python llamada NetworkX y así realizar el análisis de los datos.
 
-Por otro lado, se utiliza el proyecto como punto de partida para explorar que es Neo4J, así como entender a nivel general el funcionamiento de las bases de
-datos orientadas a grafos, es importante hacer la salvedad que unicamente es exploratorio y con fines de entendimiento aplicando ideas creadas a partir 
-de la indicación del entregable.
+Por otro lado, se utiliza el proyecto como punto de partida para explorar qué es Neo4J, así como entender a nivel general el funcionamiento de las bases de datos orientadas a grafos. Es importante hacer la salvedad que únicamente es exploratorio y con fines de entendimiento, aplicando ideas creadas a partir de la indicación del entregable.
 
-Se trabaja con una arquitectura de microservicios con el fin de emular un escenario lo mas cercano a la realidad empresarial posible y que ademas permita la reutilización 
-de segmentos de código en otros proyectos de exploración o incluso desarrollo mas adelante.
+Se trabaja con una arquitectura de microservicios con el fin de emular un escenario lo más cercano a la realidad empresarial posible y que además permita la reutilización de segmentos de código en otros proyectos de exploración o incluso desarrollo más adelante.
 
-El proyecto utiliza como base de datos a Neo4J, esto añade complejidad sin embargo exploramos términos avanzados que nos permiten comprender de forma introductoria el como funciona esta base de datos,
-aparte del uso en Docker se recomienda instalar Neo4J Desktop y ejecutar las consultas aquí comaprtidas, para visualziar la herramienta a nivel gráfico y familizarizarse con la misma.
+El proyecto utiliza como base de datos a Neo4J, esto añade complejidad sin embargo exploramos términos avanzados que nos permiten comprender de forma introductoria el cómo funciona esta base de datos. Aparte del uso en Docker, se recomienda instalar Neo4J Desktop y ejecutar las consultas aquí compartidas, para visualizar la herramienta a nivel gráfico y familiarizarse con la misma.
 
 # Arquitectura del proyecto
 
@@ -28,7 +23,7 @@ graph-analysis/
 │   │   ├── neo4j_client.py         # Cliente Neo4j y consulta Cypher
 │   │   └── schemas.py              # Pydantic models (GraphEdge, etc.)
 │   ├── Dockerfile 
-│   ├── README.md                   # Guia de microservicio
+│   ├── README.md                   # Guía de microservicio
 │   └── requirements.txt
 │
 ├── routing-service/                # Microservicio de cálculo de rutas
@@ -38,7 +33,7 @@ graph-analysis/
 │   │   ├── orchestrator.py         # Lógica de orquestación de rutas
 │   │   └── schemas.py              # Pydantic models (RouteRequest, RouteResponse)
 │   ├── Dockerfile 
-│   ├── README.md                   # Guia de microservicio
+│   ├── README.md                   # Guía de microservicio
 │   └── requirements.txt
 │
 ├── graph-normalizer/               # Paquete reutilizable de carga y normalización
@@ -59,18 +54,31 @@ graph-analysis/
 └── .env  
 ```
 
+## Puertos Unificados
+
+Este proyecto utiliza puertos consistentes tanto en modo local como Docker:
+
+| Servicio | Puerto | URL | Descripción |
+|----------|--------|-----|-------------|
+| Neo4j Browser | 7474 | http://localhost:7474 | Interfaz web de Neo4j |
+| Neo4j Bolt | 7687 | bolt://localhost:7687 ó bolt://neo4j:7687 | Conexión de base de datos |
+| ingest-service | 8001 | http://localhost:8001 | API de exportación de grafos |
+| routing-service | 8002 | http://localhost:8002 | API de cálculo de rutas |
+
+**Ventaja**: Puedes usar la misma configuración de Postman sin importar el modo de ejecución.
+
 # Preparación del entorno
 
 ## Subsistema de Linux para Windows WSL
-Para poder ejecutar la aplicación he instalado el subsitema de Linux para Windows WSL, la documentación está en la siguiente página.
+Para poder ejecutar la aplicación he instalado el subsistema de Linux para Windows WSL, la documentación está en la siguiente página:
 
 ```bash
 https://learn.microsoft.com/es-es/windows/wsl/install
 ```
-*Instalar Ubunbu en el Subsistema de Linux para Windos.*
+*Instalar Ubuntu en el Subsistema de Linux para Windows.*
 
 ## Variables de entorno
-Luego configuramos el .env.
+Luego configuramos el .env:
 ```bash
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
@@ -79,7 +87,7 @@ INGEST_LOGFILE=ingest.log
 ```
 
 ## Instalación de Docker
-Descargar e instalar Docker Desktop para Windows. Importante al ejecutar el instalador marcar la opción *"Use the WSL 2 based engine"*. Ademas seleccionar la distribución Ubuntu, tal como hicimos en nuestro WSL.
+Descargar e instalar Docker Desktop para Windows. Importante: al ejecutar el instalador marcar la opción *"Use the WSL 2 based engine"*. Además, seleccionar la distribución Ubuntu, tal como hicimos en nuestro WSL.
 
 Una vez instalado Docker ir a:
 Configuración (Settings) → Recursos (Resources) → WSL Integration
@@ -89,7 +97,7 @@ Guardar y reiniciar.
 
 ![alt text](assets/images/image.png)
 
-Para probar que todo esté en orden, abrir el terminal de Linux 
+Para probar que todo esté en orden, abrir el terminal de Linux:
 ```bash
 docker --version
 
@@ -103,7 +111,7 @@ docker run --rm hello-world
 ```
 
 ## Entorno virtual dentro de WSL
-Trabajaremos con entornos virtuales, así como realizaremos pruebas, intalaremos estas librerias
+Trabajaremos con entornos virtuales, así como realizaremos pruebas, instalaremos estas librerías:
 ```bash
 sudo apt update
 
@@ -117,9 +125,9 @@ sudo apt install jq
 sudo apt update && sudo apt install dos2unix
 ```
 
-Crear entorno virtual usando terminal de Linux
+Crear entorno virtual usando terminal de Linux:
 ```bash
-# En la carpeta raiz
+# En la carpeta raíz
 cd ~/ruta/a/graph-analysis
 
 # Crea el entorno virtual
@@ -132,9 +140,9 @@ source .venv/bin/activate
 deactivate
 ```
 
-*Un entorno virtual isntala librerias unicamente en el entorno aislado, evitando isntalarlas en el sistema operativo, minimizando así probelams de compatibilidad entre librerias, util cuando se desarrollan distintos sistemas que pueden necesitar distintas librerias que no son compatibles entre si.*
+*Un entorno virtual instala librerías únicamente en el entorno aislado, evitando instalarlas en el sistema operativo, minimizando así problemas de compatibilidad entre librerías. Es útil cuando se desarrollan distintos sistemas que pueden necesitar distintas librerías que no son compatibles entre sí.*
 
-Ahora si, con el entorno virtual activado instalamos librerias
+Ahora sí, con el entorno virtual activado instalamos librerías:
 ```bash
 # Primero actualiza pip
 pip install --upgrade pip
@@ -145,9 +153,9 @@ pip install -r routing-service/requirements.txt
 ```
 
 ## Levantar Neo4j en Docker
-Usando la consola de Linux vamos a ejecutar los siguientes comandos
+Usando la consola de Linux vamos a ejecutar los siguientes comandos:
 ```bash
-# Ir a la raiz del proyecto
+# Ir a la raíz del proyecto
 cd graph-analysis
 
 # Normalizamos el .env para Unix
@@ -173,7 +181,7 @@ docker run -d --name neo4j-wsl \
   neo4j:5.9
 ```
 
-Comandos clave, de ahora en adleante para levantar o frenar nuestra base de datos haremos lo siguiente
+Comandos clave, de ahora en adelante para levantar o frenar nuestra base de datos haremos lo siguiente:
 
 ```bash
 # Levantar Base
@@ -185,51 +193,50 @@ docker stop neo4j-wsl
 # Ver Logs
 docker logs -f neo4j-wsl
 ```
-*Si, es necesario levantar la base para que nuestro sistema funcione*
+*Sí, es necesario levantar la base para que nuestro sistema funcione.*
 
 # Microservicios
 
 ## Creación de base Neo4J (Docker)
-Si ha seguido los pasos a este punto tendremos una base de datos orientada a grafos levantada en Docker, esta, está vacia, pero tiene persistencia de datos, necesitamos poblar esta base para realizar nuestras pruebas.
+Si ha seguido los pasos a este punto tendremos una base de datos orientada a grafos levantada en Docker. Esta está vacía, pero tiene persistencia de datos, necesitamos poblar esta base para realizar nuestras pruebas.
 
-Vamos a ir al readme que se aloja dentro de *"queries"*, seguimos los pasos, esto va a poblar con datos para nuestro ejemplo la base, se basan en un laboratorio universitario.
+Vamos a ir al README que se aloja dentro de *"queries"*, seguimos los pasos, esto va a poblar con datos para nuestro ejemplo la base, se basan en un laboratorio universitario.
 
 ## Conexión con Neo4J (ingest-service)
 
-Debemos levantar los distintos microservicios, primero, tenemos *ingest-service*, este microservicio lo que hace es conectarse a la base de datos de Neo4J y permitirnos realizar consultas a la base de datos.
-
+Debemos levantar los distintos microservicios. Primero, tenemos *ingest-service*, este microservicio lo que hace es conectarse a la base de datos de Neo4J y permitirnos realizar consultas a la base de datos.
 
 Para levantar el microservicio:
 ```bash
-# Ir a la raiz del proyecto
+# Ir a la raíz del proyecto
 cd graph-analysis
 
-# Activamos nuestro entrono virtual
+# Activamos nuestro entorno virtual
 source .venv/bin/activate
 
 # Instalamos requerimientos si no lo hemos hecho
 pip install -r ingest-service/requirements.txt
 
 # Levantamos servidor
-uvicorn ingest-service.app.main:app --reload --host 127.0.0.1 --port 8000
+uvicorn ingest-service.app.main:app --reload --host 127.0.0.1 --port 8001
 ```
 
-Una vez levantado uvicorn abrimos otra consola sin cerrar la actual, como recomendación siempre renombro mis consolas para saber que estoya haciendo en cada una, a esta le puse *ingest-service*, en la otra consola lo que vamos a probar es que la consulta funcione, por ende que exista conexión.
+Una vez levantado uvicorn abrimos otra consola sin cerrar la actual. Como recomendación, siempre renombro mis consolas para saber qué estoy haciendo en cada una, a esta le puse *ingest-service*. En la otra consola lo que vamos a probar es que la consulta funcione, por ende que exista conexión.
 
-Para probar la conexión
-```Bash
-curl -s http://127.0.0.1:8000/export-graph | jq .
+Para probar la conexión:
+```bash
+curl -s http://127.0.0.1:8001/export-graph | jq .
 ```
-*Debería devolver los datos en formato JSON, a este punto ya tenemos que haber seguido las instruccones dentro del README.md que está en queries*
+*Debería devolver los datos en formato JSON, a este punto ya tenemos que haber seguido las instrucciones dentro del README.md que está en queries.*
 
 ## Arrancar el Routing-Service
-Abrimos una nueva consola, ejecutamos lo siguiente
+Abrimos una nueva consola, ejecutamos lo siguiente:
 
 ```bash
-# Ir a la raiz del proyecto
+# Ir a la raíz del proyecto
 cd graph-analysis 
 
-# Activamos nuestro entrono virtual en esta nueva consola
+# Activamos nuestro entorno virtual en esta nueva consola
 source .venv/bin/activate
 
 # Instalamos requerimientos si no lo hemos hecho
@@ -237,12 +244,11 @@ pip install -r routing-service/requirements.txt
 
 # Levantamos servicio de rutas
 uvicorn routing-service.app.main:app \
-  --reload --host 127.0.0.1 --port 8001
+  --reload --host 127.0.0.1 --port 8002
 ```
 
-
 # Levantar el Backend
-Siguiendo todos los pasos podemos levantar el sistema de forma sencilla, primero abrimos 3 consolas y las renombramos, todas en linux (WSL):
+Siguiendo todos los pasos podemos levantar el sistema de forma sencilla. Primero abrimos 3 consolas y las renombramos, todas en Linux (WSL):
 - neo4j-docker
 - ingest-server
 - routing-service
@@ -257,7 +263,7 @@ docker start neo4j-wsl
 cd graph-analysis
 source .venv/bin/activate
 
-uvicorn ingest-service.app.main:app --reload --host 127.0.0.1 --port 8000
+uvicorn ingest-service.app.main:app --reload --host 127.0.0.1 --port 8001
 ```
 
 ### routing-service
@@ -266,15 +272,15 @@ cd graph-analysis
 source .venv/bin/activate
 
 uvicorn routing-service.app.main:app \
-  --reload --host 127.0.0.1 --port 8001
+  --reload --host 127.0.0.1 --port 8002
 ```
 
 # Probar en Postman
-Creemos una carpeta, en mi caso la llamaré *Graph Algorithms*, creamos un nuevo *Environment*, le pondremos *GraphAPI* y usaremos las siguientes variables
+Creamos una carpeta, en mi caso la llamaré *Graph Algorithms*, creamos un nuevo *Environment*, le pondremos *GraphAPI* y usaremos las siguientes variables:
 
 - host = 127.0.0.1
-- ingest_port = 8000
-- route_port = 8001
+- ingest_port = 8001
+- route_port = 8002
 
 ### export-graph (GET)
 http://{{host}}:{{ingest_port}}/export-graph
@@ -285,8 +291,8 @@ Veremos un JSON con la información en nuestra base de datos o bien la tabla con
 ### route (POST)
 http://{{host}}:{{route_port}}/route
 
-Definimos en el body (RAW) los parametros que espera nuestro sistema.
-```bash
+Definimos en el body (RAW) los parámetros que espera nuestro sistema:
+```json
 {
   "start": "A",
   "end":   "B",
@@ -296,18 +302,18 @@ Definimos en el body (RAW) los parametros que espera nuestro sistema.
 Veremos un JSON con la información del path seguido por el algoritmo seleccionado.
 ![alt text](assets/images/image-2.png)
 
-Recordemos que la variable "algo" espera el algoritmo, ahi solo cambiamos cual queremos ejecutar.
+Recordemos que la variable "algo" espera el algoritmo, ahí solo cambiamos cual queremos ejecutar:
 - "bfs"
 - "dfs"
 - "prim"
 
 # Despliegue en Docker
-El despliegue que hemos realizado a este punto ha sido manual, y es muy util para comprender como funciona el sistema y que operacioens realiza, sin embargo, para simplificarlo y tener algo mas robusto semejante a lo que veriamso en un entorno empresaria, podemos desplegar el sistema en docker mediante el uso de imágenes.
+El despliegue que hemos realizado a este punto ha sido manual, y es muy útil para comprender cómo funciona el sistema y qué operaciones realiza. Sin embargo, para simplificarlo y tener algo más robusto similar a lo que veríamos en un entorno empresarial, podemos desplegar el sistema en Docker mediante el uso de imágenes.
 
-Primero, cambiaremos nuestro .env para que sea compatible con docker y no el modo de pruebas locales, tenemos que descomentar *NEO4J_URI=bolt://neo4j:7687 Para Docker* y comentar *NEO4J_URI=bolt://localhost:7687*
+Primero, cambiaremos nuestro .env para que sea compatible con Docker y no el modo de pruebas locales, tenemos que descomentar *NEO4J_URI=bolt://neo4j:7687 Para Docker* y comentar *NEO4J_URI=bolt://localhost:7687*:
 ```bash
-NEO4J_URI=bolt://localhost:7687
-# NEO4J_URI=bolt://neo4j:7687       Para Docker
+# NEO4J_URI=bolt://localhost:7687
+NEO4J_URI=bolt://neo4j:7687       # Para Docker
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=your_password_here
 INGEST_LOGFILE=ingest.log
@@ -315,30 +321,37 @@ INGEST_SERVICE_URL=http://ingest-service:8001/export-graph
 ROUTING_LOGFILE=routing.log
 ```
 
-Guardamos los cambios y estando en la carpeta raiz ejecutamos
+Guardamos los cambios y estando en la carpeta raíz ejecutamos:
 ```bash
 docker-compose up --build
 ```
-*Nota esto ejecutará la creación de imágenes, los servicios quedarán arriba, para frenarlos unicamente utilziar CTRL + C*
+*Nota: esto ejecutará la creación de imágenes, los servicios quedarán arriba, para frenarlos únicamente utilizar CTRL + C.*
 
-Una vez creados los contenedores podemos nuevamente levantar nuestro sistema con el siguiente comando 
+Una vez creados los contenedores podemos nuevamente levantar nuestro sistema con el siguiente comando:
 ```bash
 docker-compose up -d
 ```
 
-Tambien podemos verificar los servicios levantados con 
+También podemos verificar los servicios levantados con:
 ```bash
 docker-compose ps
 ```
 
-Incluso podemos abrir otra consola para mnonitorear los logs de nuestra aplicación
+Incluso podemos abrir otra consola para monitorear los logs de nuestra aplicación:
 ```bash
 docker-compose logs -f ingest-service routing-service
 ```
 
-Podemos detener los servicios en cualquier momento con 
+Podemos detener los servicios en cualquier momento con:
 ```bash
 docker-compose down
 ```
 
-Podremos utilizar de igual forma postman para realizar consultas, solo que esta vez *ingest_port = 8001* y *route_port = 8001*
+## Configuración de Postman para Docker
+Cuando ejecutemos en modo Docker, los puertos son los mismos, por lo que **NO necesitas cambiar tu configuración de Postman**. Las variables del environment siguen siendo:
+
+- host = 127.0.0.1
+- ingest_port = 8001
+- route_port = 8002
+
+Esto es así porque Docker mapea los puertos internos a los mismos puertos externos para mantener consistencia entre ambos modos de ejecución.
