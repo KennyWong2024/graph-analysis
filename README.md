@@ -43,6 +43,7 @@ graph-analysis/
 │       ├── __init__.py
 │       ├── bfs.py               
 │       ├── dfs.py
+│       ├── full.py
 │       └── prim.py
 │
 ├── queries/                        # Consultas para poblar datos de ejemplo

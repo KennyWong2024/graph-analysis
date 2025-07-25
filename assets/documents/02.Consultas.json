@@ -1,0 +1,32 @@
+[
+    {
+        "algo": "bfs",
+        "start":"A",
+        "end":"Z"
+    },
+    {
+        "algo": "bfs",
+        "start": "A"
+    },
+    {
+        "algo": "dfs",
+        "start":"A",
+        "end":"Z"
+    },
+    {
+        "algo": "dfs",
+        "start": "A"
+    },
+    {
+        "algo": "prim",
+        "start": "A"
+    },
+    {
+        "algo": "prim"
+    },
+    {
+        "algo": "dijkstra",
+        "start": "A",
+        "end": "Z"
+    }
+]

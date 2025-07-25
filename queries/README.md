@@ -6,29 +6,18 @@ Entre las premisas, podemos ejecutar estos mismos comandos en Neo4j Desktop, sí
 
 ## Escenario
 
-La justificación del laboratorio y lo que se busca recrear con datos ficticios es lo siguiente:
-
-En el escenario planteado tenemos un centro de distribución de compras en línea. Los artículos a entregar habitualmente son pequeños y cada mañana recibimos una base de datos con las entregas del día, previamente confirmadas con el cliente la disponibilidad.
-
-Nuestro trabajo es recopilar la dirección en la que el cliente desea recibir su artículo, procesar el dato e incluirlo en la base.
-
-El algoritmo debe encontrar la ruta más óptima de entrega, incluir el pedido y dar al cliente distintas opciones disponibles para entrega, calculando las rutas con base en la distancia.
-
-Para representar el ejercicio utilizaremos las siguientes coordenadas de clientes, nuestro CEDI y los cruces:
-*[Aquí falta completar la información sobre las coordenadas]*
+Supongamos que tenemos puntos de venta que debemos estar suministrando, estos puntos son los destinos de entrega, el punto de partida puede ser M (Puntarenas), V (Limón) o el centro de distribución A (San José), la idea es ejecutar algoritmos que nos permitan explorar las formas mas eficientes de distribuir los recursos, para ello, constuiremos una base de datos en Ne4j con datos ficticios que nos permitan realizar el ejercicio.
 
 ## Ejecución de Consultas
 
 Para representar este escenario ejecutaremos en orden las siguientes consultas en Cypher:
 
-1. **01-nodos-clientes.cypher**  
-   Crea los nodos `Cliente` A–H.  
+1. **01-nodos-ciudades.cypher**  
+   Ciudades donde tenemos una sede. 
 
-2. **02-nodos-cruces.cypher**  
-   Crea los nodos `Cruce` I–Z.  
+2. **02-aristas-rutas.cypher**  
+   Rutas entre distintas ciudades con su respectivo kiloemtraje
 
-3. **03-conexiones-bidireccionales.cypher**  
-   Crea las relaciones `:CONECTADO` en ambas direcciones con sus distancias.
 
 ## Comandos de Ejecución
 
@@ -60,13 +49,10 @@ docker cp queries neo4j-wsl:/queries
 
 # Ejecutar consultas en orden
 docker exec neo4j-wsl cypher-shell -u neo4j -p $NEO4J_PASSWORD \
-  -f /queries/01-nodos-clientes.cypher
+  -f /queries/01-nodos-ciudades.cypher
 
 docker exec neo4j-wsl cypher-shell -u neo4j -p $NEO4J_PASSWORD \
-  -f /queries/02-nodos-cruces.cypher
-
-docker exec neo4j-wsl cypher-shell -u neo4j -p $NEO4J_PASSWORD \
-  -f /queries/03-conexiones-bidireccionales.cypher
+  -f /queries/02-aristas-rutas.cypher
 ```
 
 ## Verificación
@@ -76,5 +62,87 @@ Para verificar que los datos se cargaron correctamente, puedes ejecutar:
 ```bash
 # Verificar nodos creados
 docker exec neo4j-wsl cypher-shell -u neo4j -p $NEO4J_PASSWORD \
-  -c "MATCH (n) RETURN labels(n), count(n)"
+  MATCH (a:Location)-[r:CONNECTED]-(b:Location)
+  WHERE a.id < b.id
+  RETURN 
+    a.id   AS Nodo1,
+    b.id   AS Nodo2,
+    r.distance AS Distancia
+  ORDER BY Nodo1, Nodo2;
+```
+
+## Reconstrucción con otros datos
+
+#### Limpiar contenedores
+Podemos borrar todos los datos y levantar nuevamente la base de datos limpia de forma sencilla con los siguientes comandos:
+```bash
+# Frenamos las bases y las eliminamos
+docker ps -a | grep neo4j | awk '{print $1}' | xargs -r docker stop
+docker ps -a | grep neo4j | awk '{print $1}' | xargs -r docker rm
+
+# Borramos la imagen de Neo para trabajar con entornos limpios
+docker images | grep neo4j | awk '{print $3}' | xargs -r docker rmi
+
+# Verificamos que no quede nada
+docker images | grep neo4j
+
+# Borrar carpetas persistentes (Si da error en Linux Sudo Su)
+rm -rf ~/neo4j-data
+rm -rf /home/kenny/neo4j-data                                             # <-- Tienen que cambiar y colocar su usuario aquí 
+rm -rf /mnt/c/Users/kenny/neo4j-data                                      # <-- Tienen que cambiar y colocar su usuario aquí 
+rm -rf /mnt/c/Users/kenny/Documents/Projects/graph-analysis/neo4j-data    # <-- Tienen que cambiar y colocar su usuario aquí 
+```
+
+Esta serie de pasos nos garantiza tener un entorno limpio para poder utilizar los datos de nuestra preferencia para realizar pruebas. Nuevamente tenemos que crear la base de datos y eventualmente podriamos modificar la información que hay dentro de las consultas *cyper* y cargar los datos según necesitemos.
+
+#### Levantar base nuevamente:
+```bash
+# Ir a la raíz del proyecto
+cd graph-analysis
+
+# Normalizamos el .env para Unix
+dos2unix .env
+
+# Crea un repositorio persistente de los datos
+mkdir -p ~/neo4j-data
+
+# Cargue su .env en el terminal
+set -o allexport
+source .env
+set +o allexport
+
+# Verificar variable de entorno 
+echo "Password en shell: [$NEO4J_PASSWORD]"
+
+# Levanta la instancia de neo4j
+docker run -d --name neo4j-wsl \
+  -p 7474:7474 \
+  -p 7687:7687 \
+  -e NEO4J_AUTH="neo4j/$NEO4J_PASSWORD" \
+  -v ~/neo4j-data:/data \
+  neo4j:5.9
+```
+
+#### Agregar datos a la base:
+```bash
+# Ir a la raíz del proyecto
+cd graph-analysis
+
+# Cargar su .env en el terminal
+set -o allexport
+source .env
+set +o allexport
+
+# Verificar variable de entorno 
+echo "Password en shell: [$NEO4J_PASSWORD]"
+
+# Copiar las consultas al contenedor
+docker cp queries neo4j-wsl:/queries
+
+# Ejecutar consultas en orden
+docker exec neo4j-wsl cypher-shell -u neo4j -p $NEO4J_PASSWORD \
+  -f /queries/01-nodos-ciudades.cypher
+
+docker exec neo4j-wsl cypher-shell -u neo4j -p $NEO4J_PASSWORD \
+  -f /queries/02-aristas-rutas.cypher
 ```

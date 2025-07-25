@@ -1,0 +1,32 @@
+UNWIND [
+  {id: 'A', provincia: 'San José', canton: 'San José', distrito: 'Pavas'},
+  {id: 'B', provincia: 'Heredia', canton: 'Heredia', distrito: 'Ulloa'},
+  {id: 'C', provincia: 'Alajuela', canton: 'Alajuela', distrito: 'Rio Segundo'},
+  {id: 'D', provincia: 'Cartago', canton: 'Cartago', distrito: 'Parte Oriental'},
+  {id: 'E', provincia: 'San José', canton: 'Mora', distrito: 'Colón'},
+  {id: 'F', provincia: 'Limón',   canton: 'Pococí', distrito: 'Guápiles'},
+  {id: 'G', provincia: 'Alajuela', canton: 'Atenas', distrito: 'Atenas'},
+  {id: 'H', provincia: 'Alajuela', canton: 'San Ramón', distrito: 'Volio'},
+  {id: 'I', provincia: 'San José',  canton: 'Puriscal', distrito: 'Santiago'},
+  {id: 'J', provincia: 'Cartago',  canton: 'Turrialba', distrito: 'Suiza'},
+  {id: 'K', provincia: 'Alajuela', canton: 'Orotina', distrito: 'Pozón'},
+  {id: 'L', provincia: 'Puntarenas', canton: 'Garabito', distrito: 'Jacó'},
+  {id: 'M', provincia: 'Puntarenas', canton: 'Puntarenas', distrito: 'Puntarenas'},
+  {id: 'N', provincia: 'Alajuela', canton: 'San Carlos', distrito: 'Quesada'},
+  {id: 'O', provincia: 'Alajuela', canton: 'San Carlos', distrito: 'Fortuna'},
+  {id: 'P', provincia: 'Heredia',  canton: 'Sarapiquí', distrito: 'Puerto Viejo'},
+  {id: 'Q', provincia: 'Limón',    canton: 'Siquirres', distrito: 'Siquirres'},
+  {id: 'R', provincia: 'San José',  canton: 'Perez Zeledón', distrito: 'Daniel Flores'},
+  {id: 'S', provincia: 'Puntarenas', canton: 'Aguirre', distrito: 'Quepos'},
+  {id: 'T', provincia: 'Puntarenas', canton: 'Osa', distrito: 'Uvita'},
+  {id: 'U', provincia: 'Puntarenas', canton: 'Buenos Aires', distrito: 'Buenos Aires'},
+  {id: 'V', provincia: 'Limón',    canton: 'Limón', distrito: 'Limón'},
+  {id: 'W', provincia: 'Guanacaste', canton: 'Cañas', distrito: 'Cañas'},
+  {id: 'X', provincia: 'Guanacaste', canton: 'Liberia', distrito: 'Liberia'},
+  {id: 'Y', provincia: 'Guanacaste', canton: 'Santa Cruz', distrito: 'Tamarindo'},
+  {id: 'Z', provincia: 'Guanacaste', canton: 'Nicoya', distrito: 'Nicoya'}
+] AS data
+MERGE (n:Location {id: data.id})
+SET n.provincia = data.provincia,
+    n.canton    = data.canton,
+    n.distrito  = data.distrito;

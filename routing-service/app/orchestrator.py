@@ -1,27 +1,22 @@
-import httpx
 import os
+import httpx
 from graph_normalizer.loader import build_graph
 from graph_normalizer.algorithms.bfs import bfs_path_cost
 from graph_normalizer.algorithms.dfs import dfs_path_cost
-from graph_normalizer.algorithms.prim import prim_tree_cost
 from graph_normalizer.algorithms.full import bfs_full_traversal, dfs_full_traversal
+from graph_normalizer.algorithms.prim import prim_tree_cost
+from graph_normalizer.algorithms.dijkstra import dijkstra
 from .schemas import RouteRequest, RouteResponse
 
-INGEST_URL = os.getenv(
-    "INGEST_SERVICE_URL",
-    "http://localhost:8000/export-graph"
-)
+INGEST_URL = os.getenv("INGEST_SERVICE_URL")
 
 async def compute_route(req: RouteRequest) -> RouteResponse:
-    # Obtener aristas
     r = httpx.get(INGEST_URL)
     r.raise_for_status()
     edges = r.json()
 
-    # Construir grafo
     G = build_graph(edges, directed=req.directed)
 
-    # Ejecutar algoritmo
     if req.algo == "bfs":
         if req.end:
             nodes, cost = bfs_path_cost(G, req.start, req.end)
@@ -35,10 +30,14 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
             nodes, cost = dfs_full_traversal(G, req.start)
 
     elif req.algo == "prim":
-        nodes, cost = prim_tree_cost(G)
+        nodes, cost, _ = prim_tree_cost(G, start=req.start)
+
+    elif req.algo == "dijkstra":
+        if not req.end:
+            raise ValueError("Dijkstra requires a destination node (`end`).")
+        nodes, cost = dijkstra(G, req.start, req.end)
 
     else:
-        raise ValueError("Algoritmo no soportado")
+        raise ValueError(f"Unsupported algorithm: {req.algo}")
 
-    # Devolver
     return RouteResponse(nodes=nodes, cost=cost)

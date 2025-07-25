@@ -26,8 +26,12 @@ except Exception:
 def fetch_graph_edges():
     logger.info("Iniciando obtención de aristas del grafo")
     query = """
-    MATCH (n)-[r:CONECTADO]->(m)
-    RETURN n.id AS source, m.id AS target, r.distancia AS weight
+        MATCH (a:Location)-[r:CONNECTED]-(b:Location)
+        WHERE a.id < b.id
+        RETURN 
+            a.id AS source,
+            b.id AS target,
+            r.distance AS weight
     """
     edges = []
     try:
