@@ -1,32 +1,73 @@
-[
-    {
-        "algo": "bfs",
-        "start":"A",
-        "end":"Z"
-    },
-    {
-        "algo": "bfs",
-        "start": "A"
-    },
-    {
-        "algo": "dfs",
-        "start":"A",
-        "end":"Z"
-    },
-    {
-        "algo": "dfs",
-        "start": "A"
-    },
-    {
-        "algo": "prim",
-        "start": "A"
-    },
-    {
-        "algo": "prim"
-    },
-    {
-        "algo": "dijkstra",
-        "start": "A",
-        "end": "Z"
-    }
-]
+{
+    "simples":[
+        {
+            "algo": "bfs",
+            "start":"A",
+            "end":"Z"
+        },
+        {
+            "algo": "bfs",
+            "start": "A"
+        },
+        {
+            "algo": "dfs",
+            "start":"A",
+            "end":"Z"
+        },
+        {
+            "algo": "dfs",
+            "start": "A"
+        },
+        {
+            "algo": "prim",
+            "start": "A"
+        },
+        {
+            "algo": "prim"
+        },
+        {
+            "algo": "dijkstra",
+            "start": "A",
+            "end": "Z"
+        }
+    ],
+    "control_fallos":[
+        {
+            "algo": "bfs",
+            "start": "A",
+            "end": "Z",
+            "exclude": ["X"]
+        },
+        {
+            "algo": "bfs",
+            "start": "A",
+            "exclude": ["X"]
+        },
+        {
+            "algo": "dfs",
+            "start": "A",
+            "end": "Z",
+            "exclude": ["X"]
+        },
+        {
+            "algo": "dfs",
+            "start": "A",
+            "exclude": ["X"]
+        },
+        {
+            "algo": "prim",
+            "start": "A",
+            "exclude": ["X"]
+        },
+        {
+            "algo": "prim",
+            "exclude": ["X"]
+        },
+        {
+            "algo": "dijkstra",
+            "start": "A",
+            "end": "Z",
+            "exclude": ["X"]
+        }
+    ]
+}

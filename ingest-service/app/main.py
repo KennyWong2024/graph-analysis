@@ -2,6 +2,7 @@ import os
 import traceback
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware 
 import structlog
 
 load_dotenv()
@@ -22,6 +23,14 @@ from .neo4j_client import fetch_graph_edges
 from .schemas import GraphEdge
 
 app = FastAPI(title="Ingest Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup():
