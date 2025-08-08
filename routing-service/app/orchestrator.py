@@ -19,7 +19,7 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
     destino_original = req.end
     req.start = req.start.upper()
     req.end = req.end.upper() if req.end else None
-    req.exclude = [e.upper() for e in req.exclude] if req.exclude else []
+    req.exclude = [e.upper() for e in (req.exclude or [])]
 
     logger.info(
         "Parámetros de ruta normalizados",
@@ -29,7 +29,8 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
         destino_normalizado=req.end,
         excluir=req.exclude,
         algoritmo=req.algo,
-        dirigido=req.directed
+        dirigido=req.directed,
+        detalle=req.detail,
     )
 
     logger.info("Solicitando grafo a ingest-service", url=INGEST_URL)
@@ -42,8 +43,8 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
         antes = len(edges)
         edges = [
             e for e in edges
-            if e.get("source").upper() not in req.exclude
-               and e.get("target").upper() not in req.exclude
+            if e.get("source", "").upper() not in req.exclude
+            and e.get("target", "").upper() not in req.exclude
         ]
         logger.info(
             "Aristas filtradas",
@@ -61,6 +62,12 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
     )
 
     logger.info("Iniciando ejecución del algoritmo", algoritmo=req.algo)
+
+    nodes = []
+    cost = 0.0
+    detail_payload = None
+    edges_payload = None
+
     if req.algo == "bfs":
         if req.end:
             nodes, cost = bfs_path_cost(G, req.start, req.end)
@@ -74,17 +81,37 @@ async def compute_route(req: RouteRequest) -> RouteResponse:
             nodes, cost = dfs_full_traversal(G, req.start)
 
     elif req.algo == "prim":
-        nodes, cost, _ = prim_tree_cost(G, start=req.start)
+        if req.detail:
+            nodes, cost, edges_added, accumulated_list = prim_tree_cost(G, start=req.start, detail=True)
+            edges_payload = edges_added
+            detail_payload = accumulated_list
+            logger.info("Detalle de Prim recibido", acumulados=accumulated_list, aristas=edges_added)
+        else:
+            nodes, cost, _ = prim_tree_cost(G, start=req.start)
+            
 
     elif req.algo == "dijkstra":
         if not req.end:
             logger.error("Error: Dijkstra requiere un nodo destino (`end`)")
             raise ValueError("Dijkstra requires a destination node (`end`).")
-        nodes, cost = dijkstra(G, req.start, req.end)
+        if req.detail:
+            nodes, cost, accumulated_list, edges_list = dijkstra(G, req.start, req.end, detail=True)
+            detail_payload = accumulated_list
+            edges_payload = edges_list
+            logger.info("Detalle de Dijkstra recibido", acumulados=accumulated_list, aristas=edges_list)
+        else:
+            nodes, cost = dijkstra(G, req.start, req.end)
+
 
     else:
         logger.error("Algoritmo no soportado", algoritmo=req.algo)
         raise ValueError(f"Unsupported algorithm: {req.algo}")
 
     logger.info("Ruta calculada con éxito", nodos=nodes, costo=cost)
-    return RouteResponse(nodes=nodes, cost=cost)
+
+    return RouteResponse(
+        nodes=nodes,
+        cost=cost,
+        detail=detail_payload,
+        edges=edges_payload
+    )

@@ -1,9 +1,9 @@
 {
-    "simples":[
+    "simples": [
         {
             "algo": "bfs",
-            "start":"A",
-            "end":"Z"
+            "start": "A",
+            "end": "Z"
         },
         {
             "algo": "bfs",
@@ -11,8 +11,8 @@
         },
         {
             "algo": "dfs",
-            "start":"A",
-            "end":"Z"
+            "start": "A",
+            "end": "Z"
         },
         {
             "algo": "dfs",
@@ -21,9 +21,6 @@
         {
             "algo": "prim",
             "start": "A"
-        },
-        {
-            "algo": "prim"
         },
         {
             "algo": "dijkstra",
@@ -31,7 +28,7 @@
             "end": "Z"
         }
     ],
-    "control_fallos":[
+    "control_fallos": [
         {
             "algo": "bfs",
             "start": "A",
@@ -57,10 +54,6 @@
         {
             "algo": "prim",
             "start": "A",
-            "exclude": ["X"]
-        },
-        {
-            "algo": "prim",
             "exclude": ["X"]
         },
         {
@@ -68,6 +61,32 @@
             "start": "A",
             "end": "Z",
             "exclude": ["X"]
+        }
+    ],
+    "detallada": [
+        {
+            "algo": "dijkstra",
+            "start": "A",
+            "end": "Z",
+            "detail": true
+        },
+        {
+            "algo": "dijkstra",
+            "start": "A",
+            "end": "Z",
+            "exclude": ["X"],
+            "detail": true
+        },
+        {
+            "algo": "prim",
+            "start": "A",
+            "detail": true
+        },
+        {
+            "algo": "prim",
+            "start": "A",
+            "exclude": ["X"],
+            "detail": true
         }
     ]
 }

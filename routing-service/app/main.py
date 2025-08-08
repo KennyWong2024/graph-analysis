@@ -10,7 +10,6 @@ from common.logging_config import setup_logging
 from .orchestrator import compute_route
 from .schemas import RouteRequest, RouteResponse
 
-
 setup_logging(logfile_path=os.getenv("ROUTING_LOGFILE", "routing.log"))
 logger = structlog.get_logger(__name__)
 
@@ -56,7 +55,8 @@ async def route(req: RouteRequest):
         destino=req.end,
         algoritmo=req.algo,
         dirigido=req.directed,
-        excluir=req.exclude
+        excluir=req.exclude,
+        detalle=req.detail
     )
     try:
         resultado = await compute_route(req)
