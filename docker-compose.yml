@@ -25,3 +25,13 @@ services:
     ports:
       - "8002:8002"
 
+  maintenance-service:
+    build:
+      context: ./maintenance-service
+      dockerfile: Dockerfile
+    image: graph-analysis-maintenance:latest
+    container_name: maintenance-service
+    env_file:
+      - ./.env
+    ports:
+      - "8003:8003"

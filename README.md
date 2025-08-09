@@ -19,9 +19,21 @@ graph-analysis/
 ├── ingest-service/                 # Microservicio de exportación de datos desde Neo4j
 │   ├── app/
 │   │   ├── __init__.py
-│   │   ├── main.py                 # FastAPI app con endpoint /export-graph, llamar logger
+│   │   ├── main.py                 # FastAPI app con endpoint /export-graph
 │   │   ├── neo4j_client.py         # Cliente Neo4j y consulta Cypher
 │   │   └── schemas.py              # Pydantic models (GraphEdge, etc.)
+│   ├── Dockerfile 
+│   ├── README.md                   # Guía de microservicio
+│   └── requirements.txt
+│  
+├── maintenance-service/            # Microservicio para calculo de nodos en mantenimiento
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                 # FastAPI app con endpoint /maintenance
+│   │   ├── orchestrator.py         # Orquestador del calculo (Aritmetica Modular)
+│   │   └── schemas.py              # Pydantic models
+│   ├── data/
+│   │   └── groups_map.json         # Arreglo con ciclos de mantenimiento
 │   ├── Dockerfile 
 │   ├── README.md                   # Guía de microservicio
 │   └── requirements.txt
